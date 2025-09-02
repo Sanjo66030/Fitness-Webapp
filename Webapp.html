@@ -202,11 +202,34 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
+                    plugins: { 
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Total Time (Minutes)', // Add chart title
+                        font: {
+                            size: 16
+                        }
+                    },
+                     tooltip: {  //Customizing tooltips
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
 
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + ' minutes';
+                                },
+                    return label;
+                            }
+                        }
+                    }
+                 },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
             // Update "Over Time" Chart
             if (overTimeChart) overTimeChart.destroy();
             overTimeChart = new Chart(overTimeCtx, {
@@ -248,6 +271,16 @@
                 showMessage('All fields are required.', 'error');
                 return;
             }
+            // Validate date format (basic check)
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            showMessage('Invalid date format. Please use YYYY-MM-DD.', 'error');
+            return;}
+            
+            //More robust date validation
+            const parsedDate = new Date(date);
+            if (isNaN(parsedDate)) {
+            showMessage('Invalid date.', 'error');
+            return; }
 
             const duration = parseInt(durationStr);
             if (isNaN(duration) || duration <= 0) {
