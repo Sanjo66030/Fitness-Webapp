@@ -118,6 +118,19 @@
         let workouts = [];
         let byActivityChart, overTimeChart;
 
+        // Function to load workouts from local storage
+        function loadWorkouts() {
+            const storedWorkouts = localStorage.getItem('workouts');
+            if (storedWorkouts) {
+                workouts = JSON.parse(storedWorkouts);
+            }
+        }
+
+        // Function to save workouts to local storage
+        function saveWorkouts() {
+            localStorage.setItem('workouts', JSON.stringify(workouts));
+        }
+
         // Function to display messages
         function showMessage(message, type) {
             messageBox.textContent = message;
