@@ -105,5 +105,5 @@ def test_post_workout_invalid_json(client):
     # Send a non-JSON payload
     response = client.post('/api/workouts', data="this is not json")
     data = response.get_json()
-    assert response.status_code == 400
+    assert response.status_code == 415
     assert data['message'] == 'Invalid JSON'
