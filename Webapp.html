@@ -256,7 +256,7 @@
             }
             
             workouts.push({ workout, duration, date });
-            
+            saveWorkouts(); // Save workouts to local storage
             showMessage('Workout added successfully!', 'success');
             form.reset();
             document.getElementById('date').value = new Date().toISOString().split('T')[0];
@@ -267,6 +267,7 @@
         // --- Initial Setup ---
 
         window.onload = () => {
+            loadWorkouts(); // Load workouts from local storage
             document.getElementById('date').value = new Date().toISOString().split('T')[0];
             updateDashboard(); // Initial call to render empty state
         };
