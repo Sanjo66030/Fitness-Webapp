@@ -245,14 +245,46 @@
                         tension: 0.1
                     }]
                 },
-                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
+                  options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Workout Duration Over Time',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: (context) => {
+                                return 'Date: ' + context[0].label;
+                            },
+                            label: (context) => {
+                                return 'Duration: ' + context.parsed.y + ' minutes';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Duration (Minutes)'
+                        }
+                    }
                 }
-            });
-        }
+            }
+        });
         
         function updateDashboard() {
             updateWorkoutList();
