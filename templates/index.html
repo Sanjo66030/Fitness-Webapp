@@ -1,20 +1,12 @@
 <!-- Chosen Palette: Calm Neutrals -->
-
 <!-- Application Structure Plan: The application is designed as a single-page dashboard with a responsive two-column layout. The left column contains the data entry form, providing a clear and immediate call to action for the user. The right column serves as a dynamic visualization space, which updates in real-time as data is added. This structure separates input from output, creating an intuitive user flow: 1. User logs an activity. 2. User immediately sees the updated workout list and summary charts. This design was chosen to provide instant feedback and make the connection between data entry and data analysis seamless, encouraging user engagement. -->
-
 <!-- Visualization & Content Choices:
-
     Workout Log: Report Info: List of all workouts, durations, and dates. -> Goal: Inform/Organize. -> Viz/Presentation: A scrollable HTML list. -> Interaction: The list updates automatically when a new workout is added. -> Justification: Provides a clear, detailed, and chronological record of all user activities. -> Library/Method: Vanilla JavaScript and HTML/Tailwind.
-
     Total Time by Activity: Report Info: Workout names and durations. -> Goal: Compare. -> Viz/Presentation: A bar chart. -> Interaction: Chart updates dynamically with new data; tooltips show exact minutes on hover. -> Justification: Allows users to easily compare the total time invested in different types of activities, identifying which exercises they focus on most. -> Library/Method: Chart.js (Canvas).
-
     Workout Duration Over Time: Report Info: Workout durations and dates. -> Goal: Analyze Change/Trends. -> Viz/Presentation: A line chart. -> Interaction: Chart updates dynamically; tooltips show date and total duration for that day. -> Justification: Helps users visualize their consistency and track their workout volume over time. -> Library/Method: Chart.js (Canvas).
     -->
-
 <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -24,9 +16,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
-background-color: #f4f7f6;
+ background-color: #f4f7f6;
 }
-.chart-container {
+.chart-container 
+{
 position: relative;
 width: 100%;
 max-width: 600px;
