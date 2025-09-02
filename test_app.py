@@ -69,7 +69,7 @@ def test_get_workouts_after_post(client):
     data = response.get_json()
     
     assert response.status_code == 200
-    #assert len(data) == 1
+    assert len(data) == 1
     assert data == []
     
 def test_post_workout_missing_fields(client):

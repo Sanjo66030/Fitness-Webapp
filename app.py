@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -59,7 +60,7 @@ def handle_workouts():
         if not isinstance(new_workout['duration'], int):
             return jsonify({'message': 'Invalid data type for duration'}), 400
         try:
-              datetime.strptime(new_workout['date'], '%Y-%m-%d')
+            datetime.strptime(new_workout['date'], '%Y-%m-%d')
         except ValueError:
             return jsonify({'message': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
