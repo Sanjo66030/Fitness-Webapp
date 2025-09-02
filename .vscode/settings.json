@@ -9,6 +9,6 @@
         "-s",
         "./__pycache__",
         "-p",
-        "*test.py"
+        "*test_app.py"
     ]
 }

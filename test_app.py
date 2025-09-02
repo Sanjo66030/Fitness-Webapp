@@ -100,7 +100,7 @@ def test_post_workout_missing_fields(client):
 def test_post_workout_invalid_json(client):
     """
     Tests a POST request with an invalid JSON payload.
-    It should return a 400 Bad Request error.
+    It should return a 415 Bad Request error.
     """
     # Send a non-JSON payload
     response = client.post('/api/workouts', data="this is not json")

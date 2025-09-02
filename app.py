@@ -12,20 +12,20 @@ workouts = []
 # To persist data between server restarts, you can uncomment the following
 # and comment out the simple in-memory list above.
 # Define a file to store the workouts
-# DATA_FILE = 'workouts.json'
-#
+DATA_FILE = 'workouts.json'
 # # Load data from file on startup
-# if os.path.exists(DATA_FILE):
-#     with open(DATA_FILE, 'r') as f:
-#         try:
-#             workouts = json.load(f)
-#         except json.JSONDecodeError:
-#             workouts = []
-#
-# def save_data():
+if os.path.exists(DATA_FILE):
+ with open(DATA_FILE, 'r') as f:
+    try:
+             workouts = json.load(f)
+         except json.JSONDecodeError:
+             workouts = []
+
+
 #     """Saves the current workouts list to a JSON file."""
-#     with open(DATA_FILE, 'w') as f:
-#         json.dump(workouts, f)
+def save_data():
+with open(DATA_FILE, 'w') as f:
+    json.dump(workouts, f)
 
 
 @app.route('/')
@@ -55,7 +55,7 @@ def handle_workouts():
         workouts.append(new_workout)
 
         # Uncomment to save data to file
-        # save_data()
+        save_data()
 
         # Return a success message
         return jsonify({'message': 'Workout added successfully'}), 201
