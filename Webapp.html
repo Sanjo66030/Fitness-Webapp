@@ -1,0 +1,262 @@
+<!-- Chosen Palette: Calm Neutrals -->
+<!-- Application Structure Plan: The application is designed as a single-page dashboard with a responsive two-column layout. The left column contains the data entry form, providing a clear and immediate call to action for the user. The right column serves as a dynamic visualization space, which updates in real-time as data is added. This structure separates input from output, creating an intuitive user flow: 1. User logs an activity. 2. User immediately sees the updated workout list and summary charts. This design was chosen to provide instant feedback and make the connection between data entry and data analysis seamless, encouraging user engagement. -->
+<!-- Visualization & Content Choices: 
+- Workout Log: Report Info: List of all workouts, durations, and dates. -> Goal: Inform/Organize. -> Viz/Presentation: A scrollable HTML list. -> Interaction: The list updates automatically when a new workout is added. -> Justification: Provides a clear, detailed, and chronological record of all user activities. -> Library/Method: Vanilla JavaScript and HTML/Tailwind.
+- Total Time by Activity: Report Info: Workout names and durations. -> Goal: Compare. -> Viz/Presentation: A bar chart. -> Interaction: Chart updates dynamically with new data; tooltips show exact minutes on hover. -> Justification: Allows users to easily compare the total time invested in different types of activities, identifying which exercises they focus on most. -> Library/Method: Chart.js (Canvas).
+- Workout Duration Over Time: Report Info: Workout durations and dates. -> Goal: Analyze Change/Trends. -> Viz/Presentation: A line chart. -> Interaction: Chart updates dynamically; tooltips show date and total duration for that day. -> Justification: Helps users visualize their consistency and track their workout volume over time. -> Library/Method: Chart.js (Canvas).
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACEestFitness Interactive Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f4f7f6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans">
+
+    <main class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Fitness Dashboard</h1>
+            <p class="text-gray-600 mt-2">Log your workouts and visualize your progress in real-time.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+            <!-- Left Column: Input Form -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Log a New Workout</h2>
+                <form id="workoutForm" class="flex flex-col space-y-4">
+                    <div>
+                        <label for="workout" class="block text-sm font-medium text-gray-700">Workout Type</label>
+                        <input type="text" id="workout" name="workout" required placeholder="e.g., Running, Weightlifting"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
+                    </div>
+
+                    <div>
+                        <label for="duration" class="block text-sm font-medium text-gray-700">Duration (minutes)</label>
+                        <input type="number" id="duration" name="duration" required placeholder="e.g., 30"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
+                    </div>
+
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" name="date" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105">
+                        Add Workout
+                    </button>
+                </form>
+                <div id="messageBox" class="mt-4 p-3 rounded-lg text-center text-sm" style="display: none;"></div>
+            </div>
+
+            <!-- Right Column: Visualizations -->
+            <div class="lg:col-span-3 bg-white rounded-xl shadow-lg p-8 space-y-8">
+                
+                <!-- Workout List -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Workout Log</h2>
+                    <div id="workoutListContainer" class="h-64 overflow-y-auto p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p id="noWorkoutsMessage" class="text-gray-500 text-center mt-8">Your logged workouts will appear here.</p>
+                        <ul id="workoutItems" class="space-y-3"></ul>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Total Time by Activity</h3>
+                        <div class="chart-container">
+                             <canvas id="byActivityChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Workout Duration Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="overTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const form = document.getElementById('workoutForm');
+        const messageBox = document.getElementById('messageBox');
+        const workoutItemsList = document.getElementById('workoutItems');
+        const noWorkoutsMessage = document.getElementById('noWorkoutsMessage');
+        const byActivityCtx = document.getElementById('byActivityChart').getContext('2d');
+        const overTimeCtx = document.getElementById('overTimeChart').getContext('2d');
+
+        // Data Store
+        let workouts = [];
+        let byActivityChart, overTimeChart;
+
+        // Function to display messages
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+            if (type === 'success') {
+                messageBox.className = 'mt-4 p-3 rounded-lg text-center text-sm bg-green-100 text-green-800';
+            } else if (type === 'error') {
+                messageBox.className = 'mt-4 p-3 rounded-lg text-center text-sm bg-red-100 text-red-800';
+            }
+            setTimeout(() => { messageBox.style.display = 'none'; }, 3000);
+        }
+
+        // --- Data Processing and UI Update Functions ---
+
+        function updateWorkoutList() {
+            workoutItemsList.innerHTML = '';
+            if (workouts.length === 0) {
+                noWorkoutsMessage.style.display = 'block';
+            } else {
+                noWorkoutsMessage.style.display = 'none';
+                // Sort workouts by date, most recent first
+                const sortedWorkouts = [...workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                sortedWorkouts.forEach(entry => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'text-gray-700 bg-white p-3 rounded-md shadow-sm';
+                    listItem.innerHTML = `<span class="font-semibold">${entry.workout}</span> - ${entry.duration} mins on <span class="text-gray-600">${entry.date}</span>`;
+                    workoutItemsList.appendChild(listItem);
+                });
+            }
+        }
+
+        function updateCharts() {
+            // Data for "By Activity" chart
+            const activityData = workouts.reduce((acc, workout) => {
+                const type = workout.workout;
+                acc[type] = (acc[type] || 0) + workout.duration;
+                return acc;
+            }, {});
+
+            const activityLabels = Object.keys(activityData);
+            const activityDurations = Object.values(activityData);
+
+            // Data for "Over Time" chart
+            const timeData = workouts.reduce((acc, workout) => {
+                const date = workout.date;
+                acc[date] = (acc[date] || 0) + workout.duration;
+                return acc;
+            }, {});
+            
+            const sortedTimeEntries = Object.entries(timeData).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+            const timeLabels = sortedTimeEntries.map(entry => entry[0]);
+            const timeDurations = sortedTimeEntries.map(entry => entry[1]);
+
+            // Update "By Activity" Chart
+            if (byActivityChart) byActivityChart.destroy();
+            byActivityChart = new Chart(byActivityCtx, {
+                type: 'bar',
+                data: {
+                    labels: activityLabels,
+                    datasets: [{
+                        label: 'Total Minutes',
+                        data: activityDurations,
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Update "Over Time" Chart
+            if (overTimeChart) overTimeChart.destroy();
+            overTimeChart = new Chart(overTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: timeLabels,
+                    datasets: [{
+                        label: 'Total Minutes per Day',
+                        data: timeDurations,
+                        fill: true,
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        tension: 0.1
+                    }]
+                },
+                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        
+        function updateDashboard() {
+            updateWorkoutList();
+            updateCharts();
+        }
+
+        // --- Event Listeners ---
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const workout = document.getElementById('workout').value.trim();
+            const durationStr = document.getElementById('duration').value;
+            const date = document.getElementById('date').value;
+
+            if (!workout || !durationStr || !date) {
+                showMessage('All fields are required.', 'error');
+                return;
+            }
+
+            const duration = parseInt(durationStr);
+            if (isNaN(duration) || duration <= 0) {
+                showMessage('Duration must be a positive number.', 'error');
+                return;
+            }
+            
+            workouts.push({ workout, duration, date });
+            
+            showMessage('Workout added successfully!', 'success');
+            form.reset();
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            
+            updateDashboard();
+        });
+
+        // --- Initial Setup ---
+
+        window.onload = () => {
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            updateDashboard(); // Initial call to render empty state
+        };
+    </script>
+</body>
+</html>
