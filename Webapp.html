@@ -132,7 +132,8 @@
         }
 
         // Function to display messages
-        function showMessage(message, type) {
+        function showMessage(message, type)
+        {
             messageBox.textContent = message;
             messageBox.style.display = 'block';
             if (type === 'success') {
@@ -145,11 +146,14 @@
 
         // --- Data Processing and UI Update Functions ---
 
-        function updateWorkoutList() {
+        function updateWorkoutList() 
+        {
             workoutItemsList.innerHTML = '';
-            if (workouts.length === 0) {
+            if (workouts.length === 0) 
+            {
                 noWorkoutsMessage.style.display = 'block';
-            } else {
+            } else 
+            {
                 noWorkoutsMessage.style.display = 'none';
                 // Sort workouts by date, most recent first
                 const sortedWorkouts = [...workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -163,9 +167,11 @@
             }
         }
 
-        function updateCharts() {
+        function updateCharts() 
+        {
             // Data for "By Activity" chart
-            const activityData = workouts.reduce((acc, workout) => {
+            const activityData = workouts.reduce((acc, workout) => 
+            {
                 const type = workout.workout;
                 acc[type] = (acc[type] || 0) + workout.duration;
                 return acc;
@@ -175,7 +181,8 @@
             const activityDurations = Object.values(activityData);
 
             // Data for "Over Time" chart
-            const timeData = workouts.reduce((acc, workout) => {
+            const timeData = workouts.reduce((acc, workout) => 
+            {
                 const date = workout.date;
                 acc[date] = (acc[date] || 0) + workout.duration;
                 return acc;
@@ -187,11 +194,14 @@
 
             // Update "By Activity" Chart
             if (byActivityChart) byActivityChart.destroy();
-            byActivityChart = new Chart(byActivityCtx, {
+            byActivityChart = new Chart(byActivityCtx, 
+            {
                 type: 'bar',
-                data: {
+                data: 
+                {
                     labels: activityLabels,
-                    datasets: [{
+                    datasets: 
+                    [{
                         label: 'Total Minutes',
                         data: activityDurations,
                         backgroundColor: 'rgba(59, 130, 246, 0.7)',
@@ -199,10 +209,12 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
+                options: 
+                {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
+                    plugins:               
+                    { 
                     legend: { display: false },
                     title: {
                         display: true,
@@ -211,30 +223,37 @@
                             size: 16
                         }
                     },
-                     tooltip: {  //Customizing tooltips
-                        callbacks: {
-                            label: function(context) {
+                    tooltip: 
+                    {  //Customizing tooltips
+                        callbacks: 
+                        {
+                            label: function(context) 
+                            {
                                 let label = context.dataset.label || '';
 
-                                if (label) {
+                                if (label) 
+                                {
                                     label += ': ';
                                 }
-                                if (context.parsed.y !== null) {
+                                if (context.parsed.y !== null) 
+                                {
                                     label += context.parsed.y + ' minutes';
                                 }
-                    return label;
+                                return label;
                             }
                         }
                     }
-                 },
+                    }
+                },
                 scales: { y: { beginAtZero: true } }
-            }
-        });
+            });
             // Update "Over Time" Chart
             if (overTimeChart) overTimeChart.destroy();
-            overTimeChart = new Chart(overTimeCtx, {
+            overTimeChart = new Chart(overTimeCtx, 
+            {
                 type: 'line',
-                data: {
+                data: 
+                {
                     labels: timeLabels,
                     datasets: [{
                         label: 'Total Minutes per Day',
@@ -245,12 +264,15 @@
                         tension: 0.1
                     }]
                 },
-                  options: {
+                options: 
+                {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
+                plugins: 
+                {
                     legend: { display: false },
-                    title: {
+                    title: 
+                    {
                         display: true,
                         text: 'Workout Duration Over Time',
                         font: {
@@ -258,7 +280,8 @@
                         }
                     },
                     tooltip: {
-                        callbacks: {
+                        callbacks: 
+                        {
                             title: (context) => {
                                 return 'Date: ' + context[0].label;
                             },
@@ -267,7 +290,7 @@
                             }
                         }
                     }
-                }
+                },
                 scales: {
                     x: {
                         title: {
@@ -283,10 +306,12 @@
                         }
                     }
                 }
-            }
-        });
+                }
+            });
+        }
 
-        function updateDashboard() {
+        function updateDashboard() 
+        {
             updateWorkoutList();
             updateCharts();
         }
