@@ -48,11 +48,20 @@ def handle_workouts():
         # Get the new workout data from the request body
         new_workout = request.get_json()
         if not new_workout:
-            return jsonify({'message': 'Invalid JSON'}), 400
+            return jsonify({'message': 'Invalid JSON data received'}), 400
 
         # Validate required fields
         if not all(k in new_workout for k in ['workout', 'duration', 'date']):
-            return jsonify({'message': 'Missing fields'}), 400
+            return jsonify({'message': 'Missing fields: workout, duration, date'}), 400
+        # Data type validation
+        if not isinstance(new_workout['workout'], str):
+            return jsonify({'message': 'Invalid data type for workout'}), 400
+        if not isinstance(new_workout['duration'], int):
+            return jsonify({'message': 'Invalid data type for duration'}), 400
+        try:
+              datetime.strptime(new_workout['date'], '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'message': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
         # Append the new workout to our list
         workouts.append(new_workout)
