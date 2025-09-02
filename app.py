@@ -14,12 +14,12 @@ workouts = []
 # Define a file to store the workouts
 DATA_FILE = 'workouts.json'
 # # Load data from file on startup
-#if os.path.exists(DATA_FILE):
-# with open(DATA_FILE, 'r') as f:
-#     try:
-#        workouts = json.load(f)
-#     except json.JSONDecodeError:
-#        workouts = []
+if os.path.exists(DATA_FILE):
+ with open(DATA_FILE, 'r') as f:
+     try:
+        workouts = json.load(f)
+     except json.JSONDecodeError:
+        workouts = []
 
 
 #     """Saves the current workouts list to a JSON file."""
