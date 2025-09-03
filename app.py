@@ -49,7 +49,7 @@ def handle_workouts():
         # Get the new workout data from the request body
         new_workout = request.get_json()
         if not new_workout:
-            return jsonify({'message': 'Invalid JSON data received'}), 400
+            return jsonify({'message': 'Invalid JSON data received'}), 415
 
         # Validate required fields
         if not all(k in new_workout for k in ['workout', 'duration', 'date']):

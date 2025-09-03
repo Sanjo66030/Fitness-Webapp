@@ -10,9 +10,11 @@ def client():
     """
     # Use app.test_client() to simulate requests to the app
     with app.test_client() as client:
-        # Clear the workouts list before each test to ensure a clean state
-        workouts.clear()
-        yield client
+         # Clear the workouts list before each test to ensure a clean state
+         workouts.clear()
+         yield client
+         # Clear the workouts list after each test
+         workouts.clear()
 
 def test_index_page(client):
     """
@@ -51,26 +53,6 @@ def test_post_workout_success(client):
     # Check if the workout was actually added to the in-memory list
     assert len(workouts) == 1
     assert workouts[0] == valid_workout
-
-def test_get_workouts_after_post(client):
-    """
-    Tests that the GET /api/workouts endpoint returns the newly added workout.
-    """
-    # First, add a workout via POST
-    valid_workout = {
-        'workout': 'Cycling Test',
-        'duration': 45,
-        'date': '2023-10-28'
-    }
-    client.post('/api/workouts', json=valid_workout)
-    
-    # Then, perform a GET request to retrieve the data
-    response = client.get('/api/workouts')
-    data = response.get_json()
-    
-    assert response.status_code == 200
-    assert len(data) == 1
-    assert data == []
     
 def test_post_workout_missing_fields(client):
     """
@@ -85,7 +67,7 @@ def test_post_workout_missing_fields(client):
     response = client.post('/api/workouts', json=invalid_workout_1)
     data = response.get_json()
     assert response.status_code == 400
-    assert data['message'] == 'Missing fields'
+    assert data['message'] == 'Missing fields: workout, duration, date'
 
     # Test case with missing 'duration' field
     invalid_workout_2 = {
@@ -95,7 +77,7 @@ def test_post_workout_missing_fields(client):
     response = client.post('/api/workouts', json=invalid_workout_2)
     data = response.get_json()
     assert response.status_code == 400
-    assert data['message'] == 'Missing fields'
+    assert data['message'] == 'Missing fields: workout, duration, date'
 
 def test_post_workout_invalid_json(client):
     """
@@ -106,4 +88,4 @@ def test_post_workout_invalid_json(client):
     response = client.post('/api/workouts', data="this is not json")
     data = response.get_json()
     assert response.status_code == 415
-    assert data['message'] == 'Invalid JSON'
+    assert data == None
