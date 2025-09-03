@@ -13,7 +13,7 @@ Prerequisites:
 To run this application locally, you'll need the following installed on your system:
 1. Docker: Used to containerize the application and its dependencies.
 2. Git: To clone the repository.
-3. Python 3.13>=: Required for running the application and tests outside of a Docker container.
+3. Python 3.13>= Required for running the application and tests outside of a Docker container.
     
 Getting Started
 
