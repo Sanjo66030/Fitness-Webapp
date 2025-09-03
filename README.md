@@ -1,16 +1,15 @@
-Workout Dashboard
+Workout Dashboard:
 
 This is a simple web application built with Python's Flask framework. It functions as a workout tracker, allowing users to log their exercise activities. The application is designed to demonstrate a complete development lifecycle, including a fully automated Continuous Integration/Continuous Delivery (CI/CD) pipeline using GitHub Actions.
 
-Features
-
+Features:
 1. Web-Based Interface: A user-friendly dashboard for logging and viewing workouts.
 2. API Endpoint: A RESTful API to add new workouts and retrieve a list of all logged activities.
 3. Persistent Data: Workouts are saved to a workouts.json file to persist data between sessions.
 4. Automated Testing: Unit tests are included to ensure application functionality and stability.
 5. CI/CD Pipeline: An automated pipeline is configured to build, test, and validate the application on every code push.
 
-Prerequisites
+Prerequisites:
 To run this application locally, you'll need the following installed on your system:
 1. Docker: Used to containerize the application and its dependencies.
 2. Git: To clone the repository.
@@ -22,13 +21,16 @@ Follow these steps to set up and run the application on your local machine.
 
 1. Clone the repository:
 
+       git URL:https://github.com/Sanjo66030/Fitness-Webapp.git
        git clone <https://github.com/Sanjo66030/Fitness-Webapp.git>
        cd <Fitness-Webapp>
-2. Build the Docker image:
+   
+3. Build the Docker image:
 The Dockerfile contains all the necessary instructions to create a portable environment for the application, including installing dependencies from requirements.txt.
 
        docker build -t workout-dashboard .
-3. Run the Docker container:
+   
+4. Run the Docker container:
 This command will start the application and map port 5000 from the container to your local machine.
 
        docker run -p 5000:5000 workout-dashboard
@@ -49,7 +51,6 @@ With PowerShell:
 For Windows users, an automated test runner script is provided.
 
     ./Automated Test Runner for Windows.ps1
-
 
 CI/CD Pipeline:
 This project uses GitHub Actions to automate the build and testing process. The workflow is defined in the .github/workflows/ci-cd.yml file.
