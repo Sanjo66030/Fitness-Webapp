@@ -58,7 +58,7 @@ def test_get_workouts_after_post(client):
     """
     # First, add a workout via POST
     valid_workout = {
-        'workout': 'Cycling',
+        'workout': 'Cycling Test',
         'duration': 45,
         'date': '2023-10-28'
     }
