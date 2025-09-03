@@ -79,5 +79,5 @@ def handle_workouts():
 
 if __name__ == '__main__':
     # You can change the port and debug settings as needed
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000)
     
